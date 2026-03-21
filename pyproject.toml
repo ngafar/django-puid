@@ -4,9 +4,29 @@ version = "0.1.0"
 description = "Prefixed unique ID field for Django models"
 readme = "README.md"
 requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Nawaz Gafar" }]
+keywords = ["django", "uid", "id", "prefixed"]
+classifiers = [
+    "Framework :: Django",
+    "Framework :: Django :: 4.2",
+    "Framework :: Django :: 5.2",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+]
 dependencies = [
     "django>=4.2",
 ]
+
+[project.urls]
+Homepage = "https://github.com/ngafar/django-puid"
+Repository = "https://github.com/ngafar/django-puid"
+Issues = "https://github.com/ngafar/django-puid/issues"
 
 [dependency-groups]
 dev = [
