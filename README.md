@@ -40,6 +40,18 @@ uid = PrefixedUIDField(prefix="usr", separator="-", random_length=8)
 # → usr-lrjk8xq2a3b9f1z
 ```
 
+## Django admin
+
+The field is non-editable by default. To display it in the admin as read-only:
+
+```python
+from django.contrib import admin
+
+@admin.register(Order)
+class OrderAdmin(admin.ModelAdmin):
+    readonly_fields = ["uid"]
+```
+
 ## ID format
 
 ```
