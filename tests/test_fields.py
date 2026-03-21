@@ -1,7 +1,50 @@
+import re
+import time
+
 import pytest
 
 from django_puid.fields import PrefixedUIDField
-from tests.models import MyModel
+from django_puid.utils import base36_encode, generate_id
+from tests.models import MyModel, MyModelCustomEntropy
+
+BASE36_PATTERN = re.compile(r"^[0-9a-z]+$")
+
+
+class TestGenerateId:
+    def test_returns_correct_prefix(self):
+        uid = generate_id("usr")
+        assert uid.startswith("usr_")
+
+    def test_body_is_base36(self):
+        uid = generate_id("usr")
+        body = uid.split("_", 1)[1]
+        assert BASE36_PATTERN.match(body)
+
+    def test_ids_are_unique(self):
+        ids = {generate_id("usr") for _ in range(100)}
+        assert len(ids) == 100
+
+    def test_ids_are_time_sortable(self):
+        id1 = generate_id("usr")
+        time.sleep(0.002)
+        id2 = generate_id("usr")
+        body1 = id1.split("_", 1)[1]
+        body2 = id2.split("_", 1)[1]
+        assert body1 < body2
+
+    def test_custom_entropy(self):
+        uid_low = generate_id("usr", entropy=2)
+        uid_high = generate_id("usr", entropy=12)
+        body_low = uid_low.split("_", 1)[1]
+        body_high = uid_high.split("_", 1)[1]
+        assert len(body_high) - len(body_low) == 10
+
+    def test_base36_encode_zero(self):
+        assert base36_encode(0) == "0"
+
+    def test_base36_encode_known_values(self):
+        assert base36_encode(36) == "10"
+        assert base36_encode(35) == "z"
 
 
 @pytest.mark.django_db
@@ -15,10 +58,10 @@ class TestPrefixedUIDField:
         obj = MyModel.objects.create()
         assert obj.uid.startswith("usr_")
 
-    def test_field_random_part_is_numeric(self):
+    def test_field_body_is_base36(self):
         obj = MyModel.objects.create()
-        prefix, random_part = obj.uid.split("_", 1)
-        assert random_part.isdigit()
+        body = obj.uid.split("_", 1)[1]
+        assert BASE36_PATTERN.match(body)
 
     def test_field_values_are_unique(self):
         obj1 = MyModel.objects.create()
@@ -36,3 +79,12 @@ class TestPrefixedUIDField:
     def test_field_prefix_is_stored(self):
         field = MyModel._meta.get_field("uid")
         assert field.prefix == "usr"
+
+    def test_field_custom_entropy(self):
+        obj = MyModel.objects.create()
+        default_body = obj.uid.split("_", 1)[1]
+
+        obj2 = MyModelCustomEntropy.objects.create()
+        custom_body = obj2.uid.split("_", 1)[1]
+
+        assert len(custom_body) - len(default_body) == 6

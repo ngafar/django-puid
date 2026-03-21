@@ -8,3 +8,10 @@ class MyModel(models.Model):
 
     class Meta:
         app_label = "tests"
+
+
+class MyModelCustomEntropy(models.Model):
+    uid = PrefixedUIDField(prefix="usr", entropy=12)
+
+    class Meta:
+        app_label = "tests"
