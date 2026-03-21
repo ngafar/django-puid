@@ -32,9 +32,9 @@ class TestGenerateId:
         body2 = id2.split("_", 1)[1]
         assert body1 < body2
 
-    def test_custom_entropy(self):
-        uid_low = generate_id("usr", entropy=2)
-        uid_high = generate_id("usr", entropy=12)
+    def test_custom_random_length(self):
+        uid_low = generate_id("usr", random_length=2)
+        uid_high = generate_id("usr", random_length=12)
         body_low = uid_low.split("_", 1)[1]
         body_high = uid_high.split("_", 1)[1]
         assert len(body_high) - len(body_low) == 10
@@ -88,7 +88,7 @@ class TestPrefixedUIDField:
         field = MyModel._meta.get_field("uid")
         assert field.prefix == "usr"
 
-    def test_field_custom_entropy(self):
+    def test_field_custom_random_length(self):
         obj = MyModel.objects.create()
         default_body = obj.uid.split("_", 1)[1]
 

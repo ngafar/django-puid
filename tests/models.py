@@ -11,7 +11,7 @@ class MyModel(models.Model):
 
 
 class MyModelCustomEntropy(models.Model):
-    uid = PrefixedUIDField(prefix="usr", entropy=12)
+    uid = PrefixedUIDField(prefix="usr", random_length=12)
 
     class Meta:
         app_label = "tests"
