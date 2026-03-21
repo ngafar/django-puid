@@ -15,3 +15,10 @@ class MyModelCustomEntropy(models.Model):
 
     class Meta:
         app_label = "tests"
+
+
+class MyModelCustomSeparator(models.Model):
+    uid = PrefixedUIDField(prefix="usr", separator="-")
+
+    class Meta:
+        app_label = "tests"

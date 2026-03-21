@@ -13,8 +13,8 @@ def base36_encode(number: int) -> str:
     return base36
 
 
-def generate_id(prefix: str, entropy: int = 6) -> str:
+def generate_id(prefix: str, entropy: int = 6, separator: str = "_") -> str:
     timestamp_b36 = base36_encode(int(time.time() * 1000))
     chars = "0123456789abcdefghijklmnopqrstuvwxyz"
     random_part = "".join(secrets.choice(chars) for _ in range(entropy))
-    return f"{prefix}_{timestamp_b36}{random_part}"
+    return f"{prefix}{separator}{timestamp_b36}{random_part}"

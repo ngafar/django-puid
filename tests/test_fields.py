@@ -5,7 +5,7 @@ import pytest
 
 from django_puid.fields import PrefixedUIDField
 from django_puid.utils import base36_encode, generate_id
-from tests.models import MyModel, MyModelCustomEntropy
+from tests.models import MyModel, MyModelCustomEntropy, MyModelCustomSeparator
 
 BASE36_PATTERN = re.compile(r"^[0-9a-z]+$")
 
@@ -38,6 +38,14 @@ class TestGenerateId:
         body_low = uid_low.split("_", 1)[1]
         body_high = uid_high.split("_", 1)[1]
         assert len(body_high) - len(body_low) == 10
+
+    def test_custom_separator(self):
+        uid = generate_id("usr", separator="-")
+        assert uid.startswith("usr-")
+
+    def test_default_separator_is_underscore(self):
+        uid = generate_id("usr")
+        assert uid.startswith("usr_")
 
     def test_base36_encode_zero(self):
         assert base36_encode(0) == "0"
@@ -88,3 +96,15 @@ class TestPrefixedUIDField:
         custom_body = obj2.uid.split("_", 1)[1]
 
         assert len(custom_body) - len(default_body) == 6
+
+    def test_field_custom_separator(self):
+        obj = MyModelCustomSeparator.objects.create()
+        assert obj.uid.startswith("usr-")
+
+    def test_field_separator_is_stored(self):
+        field = MyModelCustomSeparator._meta.get_field("uid")
+        assert field.separator == "-"
+
+    def test_field_default_separator_is_underscore(self):
+        field = MyModel._meta.get_field("uid")
+        assert field.separator == "_"
