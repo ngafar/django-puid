@@ -8,6 +8,10 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.13"]
+        django-version: ["5.2"]
 
     steps:
       - uses: actions/checkout@v4
@@ -15,8 +19,14 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@v5
 
+      - name: Set up Python ${{ matrix.python-version }}
+        run: uv python pin ${{ matrix.python-version }}
+
       - name: Install dependencies
         run: uv sync --dev
+
+      - name: Install Django ${{ matrix.django-version }}
+        run: uv add "django~=${{ matrix.django-version }}"
 
       - name: Run tests
         run: uv run pytest
