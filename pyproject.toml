@@ -8,19 +8,13 @@ dependencies = [
     "django>=4.2",
 ]
 
-[project.optional-dependencies]
+[dependency-groups]
 dev = [
-    "pytest",
-    "pytest-django",
+    "pytest>=9.0.2",
+    "pytest-django>=4.12.0",
 ]
 
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "tests.settings"
 pythonpath = ["."]
 addopts = "--no-migrations"
-
-[dependency-groups]
-dev = [
-    "pytest>=9.0.2",
-    "pytest-django>=4.12.0",
-]
