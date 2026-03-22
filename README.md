@@ -15,16 +15,34 @@ IDs are time-sortable (timestamp in base36) with a cryptographically random suff
 pip install django-puid
 ```
 
-## Usage
+## Quick Start
 
 ```python
 from django_puid.fields import PrefixedUIDField
 
-class Order(models.Model):
-    uid = PrefixedUIDField(prefix="order")
+class Customer(models.Model):
+    uid = PrefixedUIDField(prefix="cus")
 ```
 
-This adds a `uid` field that auto-generates on save and does not replace Django's default integer primary key.
+The `uid` field auto-generates on save. It sits alongside Django's default integer primary key — it doesn't replace it.
+
+## Why Not UUID?
+
+| | UUID | django-puid |
+|---|---|---|
+| Readable in logs | ❌ | ✅ |
+| Self-describing in URLs | ❌ | ✅ |
+| Easy to copy in support tickets | ❌ | ✅ |
+| Time-sortable | ❌ | ✅ |
+| Collision-resistant | ✅ | ✅ |
+
+```python
+# UUID
+order_id = "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+
+# django-puid
+order_id = "order_lrjk8xr7z91mk"
+```
 
 ## Options
 
@@ -34,30 +52,18 @@ This adds a `uid` field that auto-generates on save and does not replace Django'
 | `separator` | `"_"` | Character between prefix and ID body |
 | `random_length` | `6` | Number of random characters in the suffix |
 
-```python
-# Custom separator and length
-uid = PrefixedUIDField(prefix="usr", separator="-", random_length=8)
-# → usr-lrjk8xq2a3b9f1z
-```
-
-## Django admin
+## Django Admin
 
 The field is non-editable by default. To display it in the admin as read-only:
 
 ```python
 from django.contrib import admin
 
-@admin.register(Order)
-class OrderAdmin(admin.ModelAdmin):
+@admin.register(Customer)
+class CustomerAdmin(admin.ModelAdmin):
     readonly_fields = ["uid"]
 ```
 
-## ID format
+## License
 
-```
-{prefix}{separator}{timestamp_base36}{random_suffix}
-      usr _ lrjk8xq 2a3b9f
-```
-
-- **Timestamp** — milliseconds since epoch encoded in base36 (~8 chars, grows slowly)
-- **Random suffix** — cryptographically random base36 characters (`secrets` module)
+MIT
