@@ -26,4 +26,5 @@ class PrefixedUIDField(models.CharField):
         kwargs["prefix"] = self.prefix
         kwargs["random_length"] = self.random_length
         kwargs["separator"] = self.separator
+        kwargs["unique"] = self._unique
         return name, path, args, kwargs
