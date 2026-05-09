@@ -1,2 +1,0 @@
-- Practice red-green TDD when possible
-- Use uv for package management
